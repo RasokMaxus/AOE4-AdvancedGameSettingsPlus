@@ -161,7 +161,6 @@ AGS_GLOBAL_SETTINGS = {
 	Treasures = false,
 	DepletedMines = false,
 	DepletedMinesYield = 0.15,
-	TreeRegrowth = false,
 	
 	ScatteredScout = false, -- defined only for nomad
 	StartingMonks = 1, --undefined
@@ -454,9 +453,6 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	end
 	if category.option_legacy_setting_wonder_construction ~= nil then
 		AGS_GLOBAL_SETTINGS.WonderConstruction = category.option_legacy_setting_wonder_construction
-	end
-	if category.option_legacy_setting_tree_regrowth ~= nil then
-		AGS_GLOBAL_SETTINGS.TreeRegrowth = category.option_legacy_setting_tree_regrowth
 	end
 	if category.option_legacy_setting_depleted_mines then
 		AGS_GlobalSettings_SetDepletedMines(category.option_legacy_setting_depleted_mines)

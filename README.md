@@ -3,7 +3,6 @@
 A fork of [Advanced Game Settings - Alternate](https://github.com/joshuasachtleben/AOE4-AdvancedGameSettings) 4.2.5 (by blue60007) for Age of Empires IV, with:
 
 - **Depleted Mines** (Gameplay Settings dropdown: Off / 10% / 15% / 20% / 25%): gold and stone deposits never run out. Once nearly empty they stay on the map as "(Depleted)" and villagers mine them at the chosen percentage of their normal speed.
-- **Tree Regrowth** (Gameplay Settings checkbox, off by default): when a tree is used up and disappears, a tree of the same kind grows back at the same spot about 15 minutes later, like in Age of Empires II. A spot covered by a building, or with a unit standing on it, waits until it is clear.
 - **Civ data fixes**: Jin Dynasty settings now apply (it was listed as `jin` instead of `jin_dynasty`); building names updated for Jin, Templar, Lancaster, Japanese and Golden Horde; Ending Age uses each civ's real age menus; no errors for civs that lack a building.
 
 Advanced Game Settings by Woprok and Joshua Sachtleben, Alternate 4.2.5 by blue60007. Licensed under GPLv3 (see LICENSE.md).

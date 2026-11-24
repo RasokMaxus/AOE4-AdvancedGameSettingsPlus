@@ -11203,7 +11203,6 @@
 							<DataValue Name="WinCondition::BooleanOptionUIDescriptor">12598238285683835085</DataValue>
 							<DataValue Name="WinCondition::BooleanOptionUIDescriptor">9490983706200757175</DataValue>
 							<DataValue Name="WinCondition::BooleanOptionUIDescriptor">6810242081811889173</DataValue>
-							<DataValue Name="WinCondition::BooleanOptionUIDescriptor">4584584292302265704</DataValue>
 							<DataValue Name="WinCondition::EnumerationOptionUIDescriptor">9817835778246734482</DataValue>
 							<DataValue Name="WinCondition::EnumerationOptionUIDescriptor">15645952372931279831</DataValue>
 							<DataValue Name="WinCondition::EnumerationOptionUIDescriptor">3784647115333268549</DataValue>
@@ -11603,45 +11602,6 @@
 										<DataProperty Name="m_modPart0" Type="UInt32" Value="2261420739"/>
 										<DataProperty Name="m_modPart1" Type="UInt32" Value="1284141931"/>
 										<DataProperty Name="m_locStringKey" Type="Int32" Value="324"/>
-									</DataObject>
-								</DataProperty>
-							</DataObject>
-							<!--WinCondition/WinCondition::OptionsUIDescriptor/WinCondition::OptionSectionUIDescriptor/WinCondition::BooleanOptionUIDescriptor/-->
-							<DataObject Name="" Type="WinCondition::BooleanOptionUIDescriptor" Id="4584584292302265704" OwnerId="11372579556134926106">
-								<DataProperty Name="#BaseTypes" Type="String" Value="WinCondition::OptionUIDescriptor#0|"/>
-								<DataProperty Name="m_key" Type="String" Value="option_legacy_setting_tree_regrowth"/>
-								<DataProperty Name="m_defaultValue" Type="Bool" Value="false"/>
-								<DataProperty Name="m_feSummaryName" Type="Object">
-									<DataValue Name="util::ReflectLocString">4021408113537486564</DataValue>
-									<!--WinCondition/WinCondition::OptionsUIDescriptor/WinCondition::OptionSectionUIDescriptor/WinCondition::BooleanOptionUIDescriptor/util::ReflectLocString/-->
-									<DataObject Name="" Type="util::ReflectLocString" Id="4021408113537486564" OwnerId="4584584292302265704">
-										<DataProperty Name="m_modPart2" Type="UInt32" Value="4053987228"/>
-										<DataProperty Name="m_modPart3" Type="UInt32" Value="3156239709"/>
-										<DataProperty Name="m_modPart0" Type="UInt32" Value="2261420739"/>
-										<DataProperty Name="m_modPart1" Type="UInt32" Value="1284141931"/>
-										<DataProperty Name="m_locStringKey" Type="Int32" Value="411"/>
-									</DataObject>
-								</DataProperty>
-								<DataProperty Name="m_feDescriptionTooltip" Type="Object">
-									<DataValue Name="util::ReflectLocString">14116815149928880267</DataValue>
-									<!--WinCondition/WinCondition::OptionsUIDescriptor/WinCondition::OptionSectionUIDescriptor/WinCondition::BooleanOptionUIDescriptor/util::ReflectLocString/-->
-									<DataObject Name="" Type="util::ReflectLocString" Id="14116815149928880267" OwnerId="4584584292302265704">
-										<DataProperty Name="m_modPart2" Type="UInt32" Value="4053987228"/>
-										<DataProperty Name="m_modPart3" Type="UInt32" Value="3156239709"/>
-										<DataProperty Name="m_modPart0" Type="UInt32" Value="2261420739"/>
-										<DataProperty Name="m_modPart1" Type="UInt32" Value="1284141931"/>
-										<DataProperty Name="m_locStringKey" Type="Int32" Value="412"/>
-									</DataObject>
-								</DataProperty>
-								<DataProperty Name="m_feName" Type="Object">
-									<DataValue Name="util::ReflectLocString">10796049286193512606</DataValue>
-									<!--WinCondition/WinCondition::OptionsUIDescriptor/WinCondition::OptionSectionUIDescriptor/WinCondition::BooleanOptionUIDescriptor/util::ReflectLocString/-->
-									<DataObject Name="" Type="util::ReflectLocString" Id="10796049286193512606" OwnerId="4584584292302265704">
-										<DataProperty Name="m_modPart2" Type="UInt32" Value="4053987228"/>
-										<DataProperty Name="m_modPart3" Type="UInt32" Value="3156239709"/>
-										<DataProperty Name="m_modPart0" Type="UInt32" Value="2261420739"/>
-										<DataProperty Name="m_modPart1" Type="UInt32" Value="1284141931"/>
-										<DataProperty Name="m_locStringKey" Type="Int32" Value="411"/>
 									</DataObject>
 								</DataProperty>
 							</DataObject>
