@@ -132,6 +132,7 @@ import("balance/ags_tournament_nomad_balance.scar")
 
 -- Wrapper around all default match options, that will have minimal changes done to them.
 import("specials/ags_utilities.scar")
+import("specials/ags_test_aids.scar") -- TEMPORARY test aids
 -- Special container for testing and unfinished functionality.
 import("specials/ags_testing.scar")
 -- Additional UI elements
