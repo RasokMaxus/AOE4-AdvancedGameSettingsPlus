@@ -53,38 +53,39 @@ function AGS_EndingAge_LockAgeUps()
 	end
 end
 
-function AGS_EndingAge_SetMaximumAge(player, max_age)
-	local prefix = AGS_CIV_PREFIXES[player.raceName]
-	
-	if prefix == "ott_" then
-		prefix = "sul_"
-		-- This is here due to ottomans not having their own, but they are using other civ
-		-- for now it looks like it's delhi menu that is used.
-		AGS_Print(prefix)
+-- Removes one age slot's construction menus (see AGS_CIV_AGE_MENUS) for a player.
+function AGS_EndingAge_RemoveMenus(player, slot)
+	local menus = AGS_CIV_AGE_MENUS[player.raceName]
+	if menus == nil or menus[slot] == nil then
+		return
 	end
-	
+	for _, menu in ipairs(menus[slot]) do
+		Player_SetConstructionMenuAvailability(player.id, menu, ITEM_REMOVED)
+	end
+end
+
+function AGS_EndingAge_SetMaximumAge(player, max_age)
 	if player.raceName == AGS_CIV_ABBASID then
-		AGS_EndingAge_RemoveAgeTechnology(player, prefix, max_age)
+		AGS_EndingAge_RemoveAgeTechnology(player, max_age)
 	else
 		if max_age < AGS_GS_AGE_FEUDAL then 
-			-- This is commented due to TC availability for nomad...
-			--Player_SetConstructionMenuAvailability(player.id, prefix.."age2", ITEM_REMOVED)
-			Player_SetConstructionMenuAvailability(player.id, prefix.."age1_wonders", ITEM_REMOVED)
+			-- age2 is not removed due to TC availability for nomad...
+			AGS_EndingAge_RemoveMenus(player, "age1_wonders")
 		end
 		if max_age < AGS_GS_AGE_CASTLE then 
-			Player_SetConstructionMenuAvailability(player.id, prefix.."age3", ITEM_REMOVED)
-			Player_SetConstructionMenuAvailability(player.id, prefix.."age2_wonders", ITEM_REMOVED)
+			AGS_EndingAge_RemoveMenus(player, "age3")
+			AGS_EndingAge_RemoveMenus(player, "age2_wonders")
 		end
 		if max_age < AGS_GS_AGE_IMPERIAL then 
-			Player_SetConstructionMenuAvailability(player.id, prefix.."age4", ITEM_REMOVED)
-			Player_SetConstructionMenuAvailability(player.id, prefix.."age3_wonders", ITEM_REMOVED)
+			AGS_EndingAge_RemoveMenus(player, "age4")
+			AGS_EndingAge_RemoveMenus(player, "age3_wonders")
 		end
 	end
 	
 	Player_SetStateModelInt(player.id, "player_max_age", AGS_GLOBAL_SETTINGS.EndingAge)
 end
 
-function AGS_EndingAge_RemoveAgeTechnology(player, prefix, final_age)
+function AGS_EndingAge_RemoveAgeTechnology(player, final_age)
 	if final_age <= AGS_GS_AGE_DARK then
 		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_HOW), ITEM_REMOVED)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_DARK, ITEM_REMOVED)
@@ -93,14 +94,14 @@ function AGS_EndingAge_RemoveAgeTechnology(player, prefix, final_age)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_TW_DARK, ITEM_REMOVED)
 	end
 	if final_age <= AGS_GS_AGE_FEUDAL then
-		Player_SetConstructionMenuAvailability(player.id, prefix.."age3", ITEM_REMOVED)
+		AGS_EndingAge_RemoveMenus(player, "age3")
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_FEUDAL, ITEM_REMOVED)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_MW_FEUDAL, ITEM_REMOVED)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_CW_FEUDAL, ITEM_REMOVED)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_TW_FEUDAL, ITEM_REMOVED)
 	end
 	if final_age <= AGS_GS_AGE_CASTLE then
-		Player_SetConstructionMenuAvailability(player.id, prefix.."age4", ITEM_REMOVED)
+		AGS_EndingAge_RemoveMenus(player, "age4")
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_EW_CASTLE, ITEM_REMOVED)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_MW_CASTLE, ITEM_REMOVED)
 		Player_SetUpgradeAvailability(player.id, AGS_ENDING_AGE_ABB_CW_CASTLE, ITEM_REMOVED)

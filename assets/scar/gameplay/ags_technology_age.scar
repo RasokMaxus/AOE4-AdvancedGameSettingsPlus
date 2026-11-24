@@ -60,17 +60,19 @@ function AGS_TechnologyAge_DetermineUpgrades(player_id, player_civ, upgrades_age
 		AGS_TechnologyAge_RemoveUpgradeList(player_id, AGS_UPGRADE_CORRECTION_TABLE[player_civ])
 	end	
 	-- Apply unique upgrades that each civ has.
-	AGS_TechnologyAge_ApplyUpgradeList(player_id, AGS_UPGRADE_TABLE[player_civ][upgrades_age])	
+	-- Civs without a unique list yet (e.g. Scots, Vikings) only get the common upgrades.
+	local civ_upgrades = AGS_UPGRADE_TABLE[player_civ]
+	AGS_TechnologyAge_ApplyUpgradeList(player_id, civ_upgrades and civ_upgrades[upgrades_age])	
 end
 
 function AGS_TechnologyAge_ApplyUpgradeList(player_id, list)
-	for _, upgrade in pairs(list) do 
+	for _, upgrade in pairs(list or {}) do 
 		AGS_ApplyUpgrade(player_id, upgrade)
 	end	
 end
 
 function AGS_TechnologyAge_RemoveUpgradeList(player_id, list)
-	for _, upgrade in pairs(list) do 
+	for _, upgrade in pairs(list or {}) do 
 		AGS_RemoveUpgrade(player_id, upgrade)
 	end	
 end

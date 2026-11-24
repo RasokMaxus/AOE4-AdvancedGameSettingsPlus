@@ -65,7 +65,10 @@ function AGS_TournamentNomadBalance_OnConstructionComplete(context)
 	end
 	-- We are looking only for landmarks.
 	if AGS_IsACapital(context.entity) then
-		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_DEFAULT)
+		local ebp_outpost = AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST)
+		if ebp_outpost ~= nil then
+			Player_SetEntityProductionAvailability(player.id, ebp_outpost, ITEM_DEFAULT)
+		end
 	end
 end
 
@@ -95,7 +98,10 @@ function AGS_TournamentNomadBalance_ApplyBalance()
 			AGS_TournamentNomadBalance_Nerf(player.id, "cost_ticks_modifier", 2, ebp)
 		end
 		-- Block outpost
-		Player_SetEntityProductionAvailability(player.id, AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST), ITEM_LOCKED)
+		local ebp_outpost = AGS_GetCivilizationEntity(player.raceName, AGS_BP_OUTPOST)
+		if ebp_outpost ~= nil then
+			Player_SetEntityProductionAvailability(player.id, ebp_outpost, ITEM_LOCKED)
+		end
 	end
 end
 -- Apply function.

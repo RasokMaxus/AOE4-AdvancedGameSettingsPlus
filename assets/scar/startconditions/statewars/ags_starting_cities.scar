@@ -399,6 +399,9 @@ function AGS_StartingCities_TreeCutter(city_pos, city_type)
 end
 -- Spawn entity as neutral and return it to caller. Entity is added to egroup.
 function AGS_StartingCities_CreateEntity(egroup, bp_entity, position, position_offset)
+	if bp_entity == nil then
+		return nil
+	end
 	if position_offset == nil then
 		position_offset = World_Pos(0, 0, 0)	
 	end	
