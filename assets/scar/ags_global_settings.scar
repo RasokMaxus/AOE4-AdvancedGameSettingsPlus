@@ -160,6 +160,7 @@ AGS_GLOBAL_SETTINGS = {
 	WonderConstruction = false,
 	Treasures = false,
 	DepletedMines = false,
+	DepletedMinesYield = 0.15,
 	
 	ScatteredScout = false, -- defined only for nomad
 	StartingMonks = 1, --undefined
@@ -453,8 +454,8 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	if category.option_legacy_setting_wonder_construction ~= nil then
 		AGS_GLOBAL_SETTINGS.WonderConstruction = category.option_legacy_setting_wonder_construction
 	end
-	if category.option_legacy_setting_depleted_mines ~= nil then
-		AGS_GLOBAL_SETTINGS.DepletedMines = category.option_legacy_setting_depleted_mines
+	if category.option_legacy_setting_depleted_mines then
+		AGS_GlobalSettings_SetDepletedMines(category.option_legacy_setting_depleted_mines)
 	end
 	if category.option_legacy_setting_simulation_speed then
 		AGS_GlobalSettings_SetSimulationSpeed(category.option_legacy_setting_simulation_speed)
@@ -1147,6 +1148,22 @@ function AGS_GlobalSettings_SetGameRates(game_rates)
 		AGS_GLOBAL_SETTINGS.GameRates = 10.00
 	elseif game_rates.enum_value == game_rates.enum_items.game_rates_20 then
 		AGS_GLOBAL_SETTINGS.GameRates = 20.00
+	end
+end
+
+-- Depleted Mines dropdown: Off, or the gather rate on depleted deposits.
+function AGS_GlobalSettings_SetDepletedMines(depleted_mines)
+	local items = depleted_mines.enum_items
+	local rates = {
+		[items.depleted_mines_10] = 0.10,
+		[items.depleted_mines_15] = 0.15,
+		[items.depleted_mines_20] = 0.20,
+		[items.depleted_mines_25] = 0.25,
+	}
+	local rate = rates[depleted_mines.enum_value]
+	AGS_GLOBAL_SETTINGS.DepletedMines = rate ~= nil
+	if rate ~= nil then
+		AGS_GLOBAL_SETTINGS.DepletedMinesYield = rate
 	end
 end
 

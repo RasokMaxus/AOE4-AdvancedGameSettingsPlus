@@ -2,7 +2,7 @@
 
 A fork of [Advanced Game Settings - Alternate](https://github.com/joshuasachtleben/AOE4-AdvancedGameSettings) 4.2.5 (by blue60007) for Age of Empires IV, with:
 
-- **Depleted Mines** (Gameplay Settings): gold and stone deposits never run out. Once nearly empty they stay on the map as "(Depleted)" and villagers mine them at 15% speed.
+- **Depleted Mines** (Gameplay Settings dropdown: Off / 10% / 15% / 20% / 25%): gold and stone deposits never run out. Once nearly empty they stay on the map as "(Depleted)" and villagers mine them at the chosen percentage of their normal speed.
 - **Civ data fixes**: Jin Dynasty settings now apply (it was listed as `jin` instead of `jin_dynasty`); building names updated for Jin, Templar, Lancaster, Japanese and Golden Horde; Ending Age uses each civ's real age menus; no errors for civs that lack a building.
 
 Advanced Game Settings by Woprok and Joshua Sachtleben, Alternate 4.2.5 by blue60007. Licensed under GPLv3 (see LICENSE.md).

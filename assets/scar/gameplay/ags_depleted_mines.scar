@@ -2,12 +2,13 @@
 -- Description:
 -- Depleted Mines: gold and stone deposits never run out. Once a deposit falls to its last few
 -- resources it becomes "depleted": it stays on the map forever, is renamed
--- "<name> (Depleted)", and villagers mining that deposit gather at 15% of their normal rate.
+-- "<name> (Depleted)", and villagers mining that deposit gather at the rate picked in the lobby
+-- (10/15/20/25% of their normal rate).
 ---------------------------------------------------------------------------------------------------
 
 AGS_DEPLETED_MINES_MODULE = "AGS_DepletedMines"
 
-AGS_DEPLETED_MINES_YIELD = 0.15			-- gather rate multiplier on depleted deposits
+AGS_DEPLETED_MINES_YIELD = 0.15			-- gather rate multiplier on depleted deposits (set from the lobby at start)
 AGS_DEPLETED_MINES_THRESHOLD = 150		-- remaining amount at which a deposit counts as depleted
 AGS_DEPLETED_MINES_RESERVE = 300		-- depleted deposits are topped back up to this every tick, so they read a steady ~300
 AGS_DEPLETED_MINES_SEARCH_RADIUS = 10	-- metres around a depleted deposit searched for its miners
@@ -43,6 +44,7 @@ end
 
 function AGS_DepletedMines_OnStarting()
 	AGS_Print("AGS_DepletedMines_OnStarting")
+	AGS_DEPLETED_MINES_YIELD = AGS_GLOBAL_SETTINGS.DepletedMinesYield or AGS_DEPLETED_MINES_YIELD
 	AGS_DepletedMines_Scan()
 	Rule_AddInterval(AGS_DepletedMines_Scan, AGS_DEPLETED_MINES_RESCAN)
 	Rule_AddInterval(AGS_DepletedMines_Tick, AGS_DEPLETED_MINES_TICK)
