@@ -401,3 +401,6 @@
 400,,,,Max Population Option,,2000
 401,,,,Depleted Mines Option,,Depleted Mines
 402,,,,Depleted Mines Option,,"Gold and stone deposits never run out. When a deposit is down to its last resources it stays on the map as ""(Depleted)"" and villagers mine it at 1/4 speed."
+403,,,,Depleted Mines Name,,Gold Vein (Depleted)
+404,,,,Depleted Mines Name,,Stone Outcropping (Depleted)
+405,,,,Depleted Mines Name,,Stone Ruins (Depleted)

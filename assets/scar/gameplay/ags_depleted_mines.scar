@@ -9,19 +9,17 @@ AGS_DEPLETED_MINES_MODULE = "AGS_DepletedMines"
 
 AGS_DEPLETED_MINES_YIELD = 0.25			-- gather rate multiplier on depleted deposits
 AGS_DEPLETED_MINES_THRESHOLD = 150		-- remaining amount at which a deposit counts as depleted
-AGS_DEPLETED_MINES_RESERVE = 300		-- depleted deposits are silently topped back up to this...
-AGS_DEPLETED_MINES_REFILL_BELOW = 200	-- ...whenever they drop below this
+AGS_DEPLETED_MINES_RESERVE = 300		-- depleted deposits are topped back up to this every tick, so they read a steady ~300
 AGS_DEPLETED_MINES_SEARCH_RADIUS = 10	-- metres around a depleted deposit searched for its miners
 AGS_DEPLETED_MINES_TICK = 0.5
 AGS_DEPLETED_MINES_RESCAN = 30			-- picks up deposits spawned mid-game
-AGS_DEPLETED_MINES_SUFFIX = " (Depleted)"
 
 AGS_DEPLETED_MINES_RESOURCES = {
 	{ unit_type = AGS_BP_DEPOSIT_GOLD, rt = RT_Gold, modifier = "resource_entity_harvest_rate_gold",
-	  names = { { match = nil, loc = "$11119542", text = "Gold Vein" } } },
+	  names = { { match = nil, loc = "$86ca8ac3736b4c8a9cefa2f15d6520bc:403" } } },
 	{ unit_type = AGS_BP_DEPOSIT_STONE, rt = RT_Stone, modifier = "resource_entity_harvest_rate_stone",
-	  names = { { match = "ruins", loc = "$11257437", text = "Stone Ruins" },
-	            { match = nil,     loc = "$11119538", text = "Stone Outcropping" } } },
+	  names = { { match = "ruins", loc = "$86ca8ac3736b4c8a9cefa2f15d6520bc:405" },
+	            { match = nil,     loc = "$86ca8ac3736b4c8a9cefa2f15d6520bc:404" } } },
 }
 
 AGS_DEPLETED_MINES_STATE = {
@@ -74,13 +72,12 @@ function AGS_DepletedMines_Scan()
 	EGroup_Clear(eg)
 end
 
--- "Gold Vein (Depleted)", localized where possible.
+-- "Gold Vein (Depleted)" etc., from this mod's string table (ids 403-405).
 function AGS_DepletedMines_MarkDepleted(deposit, res)
 	local bp_name = string.lower(BP_GetName(Entity_GetBlueprint(deposit)) or "")
 	for _, n in ipairs(res.names) do
 		if n.match == nil or string.find(bp_name, n.match, 1, true) then
-			local ok, name = pcall(function() return Loc_GetString(n.loc) .. AGS_DEPLETED_MINES_SUFFIX end)
-			Entity_OverrideScreenName(deposit, ok and name or (n.text .. AGS_DEPLETED_MINES_SUFFIX))
+			Entity_OverrideScreenName(deposit, n.loc)
 			return
 		end
 	end
@@ -129,7 +126,7 @@ function AGS_DepletedMines_Tick()
 			end
 
 			if state.depleted[id] then
-				if amount < AGS_DEPLETED_MINES_REFILL_BELOW then
+				if amount < AGS_DEPLETED_MINES_RESERVE then
 					Entity_SetRemainingResourceDepositAmount(deposit, AGS_DEPLETED_MINES_RESERVE)
 				end
 				for _, player in pairs(PLAYERS) do
