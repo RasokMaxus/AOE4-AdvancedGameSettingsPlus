@@ -1,4 +1,4 @@
-# Advanced Game Settings+
+# Advanced Game Settings Plus
 
 A fork of [Advanced Game Settings - Alternate](https://github.com/joshuasachtleben/AOE4-AdvancedGameSettings) 4.2.5 (by blue60007) for Age of Empires IV, with:
 
