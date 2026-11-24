@@ -101,6 +101,7 @@ import("ai/ags_ai.scar")
 -- Gameplay options are loaded as last.
 import("gameplay/ags_color_maintainer.scar")
 import("gameplay/ags_ding.scar")
+import("gameplay/ags_depleted_mines.scar")
 import("gameplay/ags_early_market.scar")
 import("gameplay/ags_ending_age.scar")
 import("gameplay/ags_double_workers.scar")

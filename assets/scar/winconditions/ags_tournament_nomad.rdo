@@ -20,10 +20,10 @@
 			<DataValue Name="util::ReflectLocString">11877459139525647158</DataValue>
 			<!--WinCondition/util::ReflectLocString/-->
 			<DataObject Name="" Type="util::ReflectLocString" Id="11877459139525647158" OwnerId="9649681318155485904">
-				<DataProperty Name="m_modPart2" Type="UInt32" Value="3554363556"/>
-				<DataProperty Name="m_modPart3" Type="UInt32" Value="514256557"/>
-				<DataProperty Name="m_modPart0" Type="UInt32" Value="1690632602"/>
-				<DataProperty Name="m_modPart1" Type="UInt32" Value="1313674332"/>
+				<DataProperty Name="m_modPart2" Type="UInt32" Value="4053987228"/>
+				<DataProperty Name="m_modPart3" Type="UInt32" Value="3156239709"/>
+				<DataProperty Name="m_modPart0" Type="UInt32" Value="2261420739"/>
+				<DataProperty Name="m_modPart1" Type="UInt32" Value="1284141931"/>
 				<DataProperty Name="m_locStringKey" Type="Int32" Value="394"/>
 			</DataObject>
 		</DataProperty>
@@ -261,10 +261,10 @@
 			<DataValue Name="util::ReflectLocString">6889023844203197455</DataValue>
 			<!--WinCondition/util::ReflectLocString/-->
 			<DataObject Name="" Type="util::ReflectLocString" Id="6889023844203197455" OwnerId="9649681318155485904">
-				<DataProperty Name="m_modPart2" Type="UInt32" Value="3554363556"/>
-				<DataProperty Name="m_modPart3" Type="UInt32" Value="514256557"/>
-				<DataProperty Name="m_modPart0" Type="UInt32" Value="1690632602"/>
-				<DataProperty Name="m_modPart1" Type="UInt32" Value="1313674332"/>
+				<DataProperty Name="m_modPart2" Type="UInt32" Value="4053987228"/>
+				<DataProperty Name="m_modPart3" Type="UInt32" Value="3156239709"/>
+				<DataProperty Name="m_modPart0" Type="UInt32" Value="2261420739"/>
+				<DataProperty Name="m_modPart1" Type="UInt32" Value="1284141931"/>
 				<DataProperty Name="m_locStringKey" Type="Int32" Value="393"/>
 			</DataObject>
 		</DataProperty>

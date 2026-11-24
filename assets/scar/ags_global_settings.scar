@@ -159,6 +159,7 @@ AGS_GLOBAL_SETTINGS = {
 	EmpoweredKings = false,
 	WonderConstruction = false,
 	Treasures = false,
+	DepletedMines = false,
 	
 	ScatteredScout = false, -- defined only for nomad
 	StartingMonks = 1, --undefined
@@ -451,6 +452,9 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	end
 	if category.option_legacy_setting_wonder_construction ~= nil then
 		AGS_GLOBAL_SETTINGS.WonderConstruction = category.option_legacy_setting_wonder_construction
+	end
+	if category.option_legacy_setting_depleted_mines ~= nil then
+		AGS_GLOBAL_SETTINGS.DepletedMines = category.option_legacy_setting_depleted_mines
 	end
 	if category.option_legacy_setting_simulation_speed then
 		AGS_GlobalSettings_SetSimulationSpeed(category.option_legacy_setting_simulation_speed)

@@ -1,0 +1,168 @@
+---------------------------------------------------------------------------------------------------
+-- Description:
+-- Depleted Mines: gold and stone deposits never run out. Once a deposit falls to its last few
+-- resources it becomes "depleted": it stays on the map forever, is renamed
+-- "<name> (Depleted)", and villagers mining that deposit gather at a quarter of their normal rate.
+---------------------------------------------------------------------------------------------------
+
+AGS_DEPLETED_MINES_MODULE = "AGS_DepletedMines"
+
+AGS_DEPLETED_MINES_YIELD = 0.25			-- gather rate multiplier on depleted deposits
+AGS_DEPLETED_MINES_THRESHOLD = 150		-- remaining amount at which a deposit counts as depleted
+AGS_DEPLETED_MINES_RESERVE = 300		-- depleted deposits are silently topped back up to this...
+AGS_DEPLETED_MINES_REFILL_BELOW = 200	-- ...whenever they drop below this
+AGS_DEPLETED_MINES_SEARCH_RADIUS = 10	-- metres around a depleted deposit searched for its miners
+AGS_DEPLETED_MINES_TICK = 0.5
+AGS_DEPLETED_MINES_RESCAN = 30			-- picks up deposits spawned mid-game
+AGS_DEPLETED_MINES_SUFFIX = " (Depleted)"
+
+AGS_DEPLETED_MINES_RESOURCES = {
+	{ unit_type = AGS_BP_DEPOSIT_GOLD, rt = RT_Gold, modifier = "resource_entity_harvest_rate_gold",
+	  names = { { match = nil, loc = "$11119542", text = "Gold Vein" } } },
+	{ unit_type = AGS_BP_DEPOSIT_STONE, rt = RT_Stone, modifier = "resource_entity_harvest_rate_stone",
+	  names = { { match = "ruins", loc = "$11257437", text = "Stone Ruins" },
+	            { match = nil,     loc = "$11119538", text = "Stone Outcropping" } } },
+}
+
+AGS_DEPLETED_MINES_STATE = {
+	deposits = {},	-- entity id -> { res = resource entry, pos = position }
+	depleted = {},	-- entity id -> true
+	slowed = {},	-- squad id -> resource entry whose slow-down is applied
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_DEPLETED_MINES_MODULE)
+
+function AGS_DepletedMines_UpdateModuleSettings()
+	AGS_Print("AGS_DepletedMines_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.DepletedMines then
+		Core_UnregisterModule(AGS_DEPLETED_MINES_MODULE)
+	end
+end
+
+function AGS_DepletedMines_OnStarting()
+	AGS_Print("AGS_DepletedMines_OnStarting")
+	AGS_DepletedMines_Scan()
+	Rule_AddInterval(AGS_DepletedMines_Scan, AGS_DEPLETED_MINES_RESCAN)
+	Rule_AddInterval(AGS_DepletedMines_Tick, AGS_DEPLETED_MINES_TICK)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_DepletedMines_Scan()
+	local state = AGS_DEPLETED_MINES_STATE
+	local eg = EGroup_CreateIfNotFound("eg_ags_depleted_mines_scan")
+	EGroup_Clear(eg)
+	World_GetAllNeutralEntities(eg)
+	for i = 1, EGroup_Count(eg) do
+		local entity = EGroup_GetEntityAt(eg, i)
+		local id = Entity_GetID(entity)
+		if state.deposits[id] == nil then
+			for _, res in ipairs(AGS_DEPLETED_MINES_RESOURCES) do
+				if Entity_IsOfType(entity, res.unit_type) and Entity_GetRemainingResourceDepositAmount(entity) > 0 then
+					state.deposits[id] = { res = res, pos = Entity_GetPosition(entity) }
+					break
+				end
+			end
+		end
+	end
+	EGroup_Clear(eg)
+end
+
+-- "Gold Vein (Depleted)", localized where possible.
+function AGS_DepletedMines_MarkDepleted(deposit, res)
+	local bp_name = string.lower(BP_GetName(Entity_GetBlueprint(deposit)) or "")
+	for _, n in ipairs(res.names) do
+		if n.match == nil or string.find(bp_name, n.match, 1, true) then
+			local ok, name = pcall(function() return Loc_GetString(n.loc) .. AGS_DEPLETED_MINES_SUFFIX end)
+			Entity_OverrideScreenName(deposit, ok and name or (n.text .. AGS_DEPLETED_MINES_SUFFIX))
+			return
+		end
+	end
+end
+
+-- The deposit a gathering villager is working is the nearest deposit of that resource.
+function AGS_DepletedMines_NearestDepositId(pos, res)
+	local best_id, best_d = nil, nil
+	for id, d in pairs(AGS_DEPLETED_MINES_STATE.deposits) do
+		if d.res == res then
+			local dist = World_DistanceSquaredPointToPoint(pos, d.pos)
+			if best_d == nil or dist < best_d then
+				best_id, best_d = id, dist
+			end
+		end
+	end
+	return best_id
+end
+
+function AGS_DepletedMines_SetSlowed(squad, res, slowed)
+	local entity = Squad_GetFirstEntity(squad)
+	if entity == nil then
+		return
+	end
+	-- Restoring applies the exact inverse multiplier so the two cancel out.
+	local value = slowed and AGS_DEPLETED_MINES_YIELD or (1 / AGS_DEPLETED_MINES_YIELD)
+	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, res.modifier, MUT_Multiplication, false, value, nil), entity, 0)
+end
+
+function AGS_DepletedMines_Tick()
+	local state = AGS_DEPLETED_MINES_STATE
+	local now_slowed = {}
+	local sg = SGroup_CreateIfNotFound("sg_ags_depleted_mines_near")
+
+	for id, d in pairs(state.deposits) do
+		if not Entity_IsValid(id) then
+			state.deposits[id] = nil
+			state.depleted[id] = nil
+		else
+			local deposit = Entity_FromID(id)
+			local amount = Entity_GetRemainingResourceDepositAmount(deposit)
+
+			if not state.depleted[id] and amount <= AGS_DEPLETED_MINES_THRESHOLD then
+				state.depleted[id] = true
+				AGS_DepletedMines_MarkDepleted(deposit, d.res)
+			end
+
+			if state.depleted[id] then
+				if amount < AGS_DEPLETED_MINES_REFILL_BELOW then
+					Entity_SetRemainingResourceDepositAmount(deposit, AGS_DEPLETED_MINES_RESERVE)
+				end
+				for _, player in pairs(PLAYERS) do
+					SGroup_Clear(sg)
+					World_GetSquadsNearPoint(player.id, sg, d.pos, AGS_DEPLETED_MINES_SEARCH_RADIUS, OT_Player)
+					for i = 1, SGroup_Count(sg) do
+						local squad = SGroup_GetSquadAt(sg, i)
+						if Squad_IsGatheringResourceType(squad, d.res.rt)
+						and AGS_DepletedMines_NearestDepositId(Squad_GetPosition(squad), d.res) == id then
+							now_slowed[Squad_GetID(squad)] = d.res
+						end
+					end
+				end
+			end
+		end
+	end
+	SGroup_Clear(sg)
+
+	-- Restore villagers that left a depleted deposit (or switched resource).
+	for squad_id, res in pairs(state.slowed) do
+		if now_slowed[squad_id] ~= res then
+			if Squad_IsValid(squad_id) then
+				AGS_DepletedMines_SetSlowed(Squad_FromID(squad_id), res, false)
+			end
+			state.slowed[squad_id] = nil
+		end
+	end
+
+	-- Slow villagers that just started mining a depleted deposit.
+	for squad_id, res in pairs(now_slowed) do
+		if state.slowed[squad_id] == nil then
+			AGS_DepletedMines_SetSlowed(Squad_FromID(squad_id), res, true)
+			state.slowed[squad_id] = res
+		end
+	end
+end

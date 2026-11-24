@@ -1,5 +1,5 @@
 ﻿ID,Pipeline,PipelineStage,Notes,TranslationNotes,Tags,Text
-1,,,,Mod Title,,Advanced Game Settings
+1,,,,Mod Title,,Advanced Game Settings (Custom)
 2,,,,Mod Page Description,,"Continuing from suspended development, this mod extends Age of Empires 4 standard game mode with new options and truly gives you an ability to customize match settings.\n\nThis mod contains additional win conditions like Score, King of the Hill, Wonder Rush, and others. It provides new starting conditions like Nomad or Fortified, and it enables many new options including Treaty & Diplomacy, Age Restrictions, Handicaps, and more.\n\nHelp, feedback, bug reports, and contributions for this mod variant can be found at: \nhttps://github.com/joshuasachtleben/AOE4-AdvancedGameSettings"
 3,,,,Mod Gamemode Description,,"Advanced Game Settings provides you with a variety of match options and win conditions to customize your game and play it how you want to.\n\nHelp, feedback, bug reports and contribution to mode can be done at:\nhttps://github.com/joshuasachtleben/AOE4-AdvancedGameSettings"
 4,,,,Option Header,,Win Conditions
@@ -194,7 +194,7 @@
 193,,,,Number,,45
 194,,,,Keep Option,,Starting Keep
 195,,,,Keep Option,,Every players starts with a Keep near start
-196,,,,Option Header,,Legacy Settings
+196,,,,Option Header,,Gameplay Settings
 197,,,,King Option,,Starting King
 198,,,,King Option,,Every players starts with a King near start
 199,,,,Ding Option,,Ding
@@ -399,3 +399,5 @@
 398,,,,Max Population Option,,1500
 399,,,,Max Population Option,,1750
 400,,,,Max Population Option,,2000
+401,,,,Depleted Mines Option,,Depleted Mines
+402,,,,Depleted Mines Option,,"Gold and stone deposits never run out. When a deposit is down to its last resources it stays on the map as ""(Depleted)"" and villagers mine it at 1/4 speed."
