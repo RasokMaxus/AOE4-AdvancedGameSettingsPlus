@@ -15,6 +15,8 @@ import("gameplay/event_cues.scar")
 import("gameplay/currentageui.scar")
 -- Chinese Dynasty UI.
 import("gameplay/chi/current_dynasty_ui.scar")
+-- Templar age-up UI: units each commanderie unlocks. Uses CreateCostData from the Dynasty UI, so keep it after that.
+import("gameplay/templar/templar_age_up_ui.scar")
 -- Score UI.
 import("gameplay/score.scar")
 -- Cheat support for dev mode.
