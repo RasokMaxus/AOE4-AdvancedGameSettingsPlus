@@ -59,8 +59,9 @@ function AGS_DepletedMines_Scan()
 	local eg = EGroup_CreateIfNotFound("eg_ags_depleted_mines_scan")
 	EGroup_Clear(eg)
 	World_GetAllNeutralEntities(eg)
-	for i = 1, EGroup_Count(eg) do
-		local entity = EGroup_GetEntityAt(eg, i)
+	-- Iterate with ForEachEx, spawned only. Looping 1..EGroup_Count with EGroup_GetEntityAt can fail mid-match
+	-- with "Invalid sim::EntityGroupObs index", a fatal script error that interrupts the game.
+	EGroup_ForEachEx(eg, function(gid, idx, entity)
 		local id = Entity_GetID(entity)
 		if state.deposits[id] == nil then
 			for _, res in ipairs(AGS_DEPLETED_MINES_RESOURCES) do
@@ -70,7 +71,8 @@ function AGS_DepletedMines_Scan()
 				end
 			end
 		end
-	end
+		return false
+	end, true, false)
 	EGroup_Clear(eg)
 end
 
@@ -99,14 +101,23 @@ function AGS_DepletedMines_NearestDepositId(pos, res)
 	return best_id
 end
 
-function AGS_DepletedMines_SetSlowed(squad, res, slowed)
+-- Returns true if the modifier was applied. A dead or dying squad can still have a valid id, so check it first.
+function AGS_DepletedMines_SetSlowed(squad_id, res, slowed)
+	if not Squad_IsValid(squad_id) then
+		return false
+	end
+	local squad = Squad_FromID(squad_id)
+	if not Squad_IsAlive(squad) or Squad_Count(squad) == 0 then
+		return false
+	end
 	local entity = Squad_GetFirstEntity(squad)
 	if entity == nil then
-		return
+		return false
 	end
 	-- Restoring applies the exact inverse multiplier so the two cancel out.
 	local value = slowed and AGS_DEPLETED_MINES_YIELD or (1 / AGS_DEPLETED_MINES_YIELD)
 	Modifier_ApplyToEntity(Modifier_Create(MAT_Entity, res.modifier, MUT_Multiplication, false, value, nil), entity, 0)
+	return true
 end
 
 function AGS_DepletedMines_Tick()
@@ -115,7 +126,7 @@ function AGS_DepletedMines_Tick()
 	local sg = SGroup_CreateIfNotFound("sg_ags_depleted_mines_near")
 
 	for id, d in pairs(state.deposits) do
-		if not Entity_IsValid(id) then
+		if not Entity_IsValid(id) or not Entity_IsOfType(Entity_FromID(id), d.res.unit_type) then
 			state.deposits[id] = nil
 			state.depleted[id] = nil
 		else
@@ -134,13 +145,13 @@ function AGS_DepletedMines_Tick()
 				for _, player in pairs(PLAYERS) do
 					SGroup_Clear(sg)
 					World_GetSquadsNearPoint(player.id, sg, d.pos, AGS_DEPLETED_MINES_SEARCH_RADIUS, OT_Player)
-					for i = 1, SGroup_Count(sg) do
-						local squad = SGroup_GetSquadAt(sg, i)
+					SGroup_ForEachEx(sg, function(gid, idx, squad)
 						if Squad_IsGatheringResourceType(squad, d.res.rt)
 						and AGS_DepletedMines_NearestDepositId(Squad_GetPosition(squad), d.res) == id then
 							now_slowed[Squad_GetID(squad)] = d.res
 						end
-					end
+						return false
+					end, true, false)
 				end
 			end
 		end
@@ -150,17 +161,14 @@ function AGS_DepletedMines_Tick()
 	-- Restore villagers that left a depleted deposit (or switched resource).
 	for squad_id, res in pairs(state.slowed) do
 		if now_slowed[squad_id] ~= res then
-			if Squad_IsValid(squad_id) then
-				AGS_DepletedMines_SetSlowed(Squad_FromID(squad_id), res, false)
-			end
+			AGS_DepletedMines_SetSlowed(squad_id, res, false)
 			state.slowed[squad_id] = nil
 		end
 	end
 
 	-- Slow villagers that just started mining a depleted deposit.
 	for squad_id, res in pairs(now_slowed) do
-		if state.slowed[squad_id] == nil then
-			AGS_DepletedMines_SetSlowed(Squad_FromID(squad_id), res, true)
+		if state.slowed[squad_id] == nil and AGS_DepletedMines_SetSlowed(squad_id, res, true) then
 			state.slowed[squad_id] = res
 		end
 	end
