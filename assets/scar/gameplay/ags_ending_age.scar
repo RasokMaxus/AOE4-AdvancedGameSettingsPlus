@@ -25,6 +25,40 @@ AGS_ENDING_AGE_ABB_MW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_economy_win
 AGS_ENDING_AGE_ABB_CW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_military_wing_imperial")
 AGS_ENDING_AGE_ABB_TW_IMPERIAL = BP_GetUpgradeBlueprint("upgrade_add_trade_wing_imperial")
 
+-- Civs (besides Abbasid above) that age up by researching upgrades instead of building landmarks.
+-- Each entry is the set of upgrades researched IN that age, which advance the player to the next one.
+-- Blueprints are looked up only for civs in the match, so a renamed upgrade cannot break other matches.
+AGS_ENDING_AGE_UPGRADES = {
+	[AGS_CIV_TEMPLAR] = {
+		[AGS_GS_AGE_DARK] = { "upgrade_age_dark_com_1_tem", "upgrade_age_dark_com_2_tem", "upgrade_age_dark_com_3_tem" },
+		[AGS_GS_AGE_FEUDAL] = { "upgrade_age_feudal_com_1_tem", "upgrade_age_feudal_com_2_tem", "upgrade_age_feudal_com_3_tem" },
+		[AGS_GS_AGE_CASTLE] = { "upgrade_age_castle_com_1_tem", "upgrade_age_castle_com_2_tem", "upgrade_age_castle_com_3_tem" },
+	},
+	[AGS_CIV_MONGOL_HA_GOL] = {
+		[AGS_GS_AGE_DARK] = { "upgrade_tent_dark_1_khan_mon_ha_gol", "upgrade_tent_dark_2_cart_mon_ha_gol" },
+		[AGS_GS_AGE_FEUDAL] = { "upgrade_tent_feudal_1_pasture_mon_ha_gol", "upgrade_tent_feudal_2_relics_mon_ha_gol" },
+		[AGS_GS_AGE_CASTLE] = { "upgrade_tent_castle_1_tribute_mon_ha_gol", "upgrade_tent_castle_2_batch_production_mon_ha_gol" },
+	},
+	[AGS_CIV_ABBASID_HA_01] = {
+		[AGS_GS_AGE_DARK] = {
+			"upgrade_add_culture_wing_dark_a_abb_ha_01", "upgrade_add_culture_wing_dark_b_abb_ha_01", "upgrade_add_economy_wing_dark_a_abb_ha_01", "upgrade_add_economy_wing_dark_b_abb_ha_01",
+			"upgrade_add_military_wing_dark_a_abb_ha_01", "upgrade_add_military_wing_dark_b_abb_ha_01", "upgrade_add_trade_wing_dark_a_abb_ha_01", "upgrade_add_trade_wing_dark_b_abb_ha_01",
+		},
+		[AGS_GS_AGE_FEUDAL] = {
+			"upgrade_add_culture_wing_feudal_a_abb_ha_01", "upgrade_add_culture_wing_feudal_b_abb_ha_01", "upgrade_add_economy_wing_feudal_a_abb_ha_01", "upgrade_add_economy_wing_feudal_b_abb_ha_01",
+			"upgrade_add_military_wing_feudal_a_abb_ha_01", "upgrade_add_military_wing_feudal_b_abb_ha_01", "upgrade_add_trade_wing_feudal_a_abb_ha_01", "upgrade_add_trade_wing_feudal_b_abb_ha_01",
+		},
+		[AGS_GS_AGE_CASTLE] = {
+			"upgrade_add_culture_wing_castle_a_abb_ha_01", "upgrade_add_culture_wing_castle_b_abb_ha_01", "upgrade_add_economy_wing_castle_a_abb_ha_01", "upgrade_add_economy_wing_castle_b_abb_ha_01",
+			"upgrade_add_military_wing_castle_a_abb_ha_01", "upgrade_add_military_wing_castle_b_abb_ha_01", "upgrade_add_trade_wing_castle_a_abb_ha_01", "upgrade_add_trade_wing_castle_b_abb_ha_01",
+		},
+		[AGS_GS_AGE_IMPERIAL] = {
+			"upgrade_add_culture_wing_imperial_a_abb_ha_01", "upgrade_add_culture_wing_imperial_b_abb_ha_01", "upgrade_add_economy_wing_imperial_a_abb_ha_01", "upgrade_add_economy_wing_imperial_b_abb_ha_01",
+			"upgrade_add_military_wing_imperial_a_abb_ha_01", "upgrade_add_military_wing_imperial_b_abb_ha_01", "upgrade_add_trade_wing_imperial_a_abb_ha_01", "upgrade_add_trade_wing_imperial_b_abb_ha_01",
+		},
+	},
+}
+
 ---------------------------------------------------------------------------------------------------
 -- Delegates:
 ---------------------------------------------------------------------------------------------------
@@ -64,6 +98,21 @@ function AGS_EndingAge_RemoveMenus(player, slot)
 	end
 end
 
+-- Removes the age-up upgrades (see AGS_ENDING_AGE_UPGRADES) that would take a player past max_age.
+function AGS_EndingAge_RemoveAgeUpgrades(player, max_age)
+	local ages = AGS_ENDING_AGE_UPGRADES[player.raceName]
+	if ages == nil then
+		return
+	end
+	for age = AGS_GS_AGE_DARK, AGS_GS_AGE_IMPERIAL do
+		if age >= max_age and ages[age] ~= nil then
+			for _, name in ipairs(ages[age]) do
+				Player_SetUpgradeAvailability(player.id, BP_GetUpgradeBlueprint(name), ITEM_REMOVED)
+			end
+		end
+	end
+end
+
 function AGS_EndingAge_SetMaximumAge(player, max_age)
 	if player.raceName == AGS_CIV_ABBASID then
 		AGS_EndingAge_RemoveAgeTechnology(player, max_age)
@@ -80,6 +129,7 @@ function AGS_EndingAge_SetMaximumAge(player, max_age)
 			AGS_EndingAge_RemoveMenus(player, "age4")
 			AGS_EndingAge_RemoveMenus(player, "age3_wonders")
 		end
+		AGS_EndingAge_RemoveAgeUpgrades(player, max_age)
 	end
 	
 	Player_SetStateModelInt(player.id, "player_max_age", AGS_GLOBAL_SETTINGS.EndingAge)
