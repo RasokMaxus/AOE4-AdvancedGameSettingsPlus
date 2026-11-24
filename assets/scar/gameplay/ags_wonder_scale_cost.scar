@@ -2,7 +2,6 @@
 -- Authors:
 -- Relic
 -- Woprock
--- Joshua Sachtleben
 --
 -- Description:
 -- Scale wonder cost from initial value to new value. Initial value can be redefined.
@@ -12,9 +11,12 @@
 AGS_WONDER_SCALE_COST_MODULE = "AGS_WonderScaleCost"
 AGS_WONDER_SCALE_COST_MODIFIERS = { }
 -- Base value that is used for math. It has to substract current value from desired value.
-AGS_WONDER_SCALE_COST_RESOURCES_TOTAL = 12000 - 24000 
+AGS_WONDER_SCALE_COST_RESOURCES_CURRENT = 24000
+AGS_WONDER_SCALE_COST_RESOURCES_TOTAL = 12000 - AGS_WONDER_SCALE_COST_RESOURCES_CURRENT
 AGS_WONDER_SCALE_COST_RESOURCES_COUNT = 4
 AGS_WONDER_SCALE_COST_RESOURCE_COUNT = {
+	scots = { total = 4, food = 1, wood = 1, gold = 1, stone = 1, initial = 20000},
+	vikings = { total = 4, food = 1, wood = 1, gold = 1, stone = 1, initial = 20000},
 	english = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
 	chinese = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
 	french = { total = 4, food = 1, wood = 1, gold = 1, stone = 1},
@@ -53,7 +55,10 @@ function AGS_WonderScaleCost_CalculateCost(player, player_count)
 	-- This will calculate inflation value for single player.
 	local one_player_inflation = AGS_WONDER_SCALE_COST_RESOURCES_COUNT * AGS_GLOBAL_SETTINGS.WonderSettings.ScaleCost
 	-- Each player adds this inflation value
-	local total_cost = AGS_WONDER_SCALE_COST_RESOURCES_TOTAL + one_player_inflation * player_count
+	local initial_cost = civ_wonder_type.initial or AGS_WONDER_SCALE_COST_RESOURCES_CURRENT
+	local total_cost = AGS_WONDER_SCALE_COST_RESOURCES_TOTAL
+		+ AGS_WONDER_SCALE_COST_RESOURCES_CURRENT - initial_cost
+		+ one_player_inflation * player_count
 	-- This will split the cost to resources.
 	local per_resource = total_cost / civ_wonder_type.total
 	return {

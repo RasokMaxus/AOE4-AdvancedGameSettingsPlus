@@ -2,7 +2,6 @@
 -- Authors:
 -- Relic
 -- Woprock
--- Joshua Sachtleben
 --
 -- Description:
 -- Spawns cities around the map.
@@ -41,6 +40,14 @@ AGS_STARTING_CITIES_TYPES = {
 }
 -- List of all combinations we support
 AGS_STARTING_CITIES_OPTIONS = {
+	{
+		civ = AGS_CIV_SCOTS,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
+	{
+		civ = AGS_CIV_VIKINGS,
+		option = AGS_STARTING_CITIES_TYPES.Standard,
+	},
 	{
 		civ = AGS_CIV_ABBASID,
 		option = AGS_STARTING_CITIES_TYPES.Standard,
@@ -365,8 +372,11 @@ function AGS_StartingCities_Build(city_pos, city_type, index)
 		AGS_StartingCities_CreateEntity(egroup_buildings, ebp_house, city_pos, city_type.option.HouseOff[i])
 	end
 	-- Blacksmith
-	local ebp_smith = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_BLACKSMITH)
-	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_smith, city_pos, city_type.option.BlacksmithOff)
+	-- Vikings use Longhouse attachments instead of a separate Blacksmith.
+	if city_type.civ ~= AGS_CIV_VIKINGS then
+		local ebp_smith = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_BLACKSMITH)
+		AGS_StartingCities_CreateEntity(egroup_buildings, ebp_smith, city_pos, city_type.option.BlacksmithOff)
+	end
 	-- Market
 	local ebp_market = AGS_GetCivilizationEntity(city_type.civ, AGS_BP_MARKET)
 	AGS_StartingCities_CreateEntity(egroup_buildings, ebp_market, city_pos, city_type.option.MarketOff)

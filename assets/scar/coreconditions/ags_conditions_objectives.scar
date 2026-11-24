@@ -2,7 +2,6 @@
 -- Authors:
 -- Relic
 -- Woprock
--- Joshua Sachtleben
 --
 -- Description:
 -- Contains condition helpers for objective handling.
@@ -80,7 +79,8 @@ function AGS_Objectives_Present(objective_id, state, title, title_param)
 	if state ~= nil then
 		Obj_SetState(objective_id, state)
 	end
-	Obj_CreatePopup(objective_id, formatted_title)	
+	-- An empty override preserves the objective's configured popup template.
+	Obj_CreatePopup(objective_id, formatted_title, "")
 end
 
 function AGS_Objectives_SetColorProgress(objective, state, color, progress_percentage)

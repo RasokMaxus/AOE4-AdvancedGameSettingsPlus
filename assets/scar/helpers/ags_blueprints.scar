@@ -2,7 +2,6 @@
 -- Authors:
 -- Relic
 -- Woprock
--- Joshua Sachtleben
 --
 -- Description:
 -- Simplified access to civilization specific blueprints.
@@ -73,6 +72,47 @@ AGS_BP_OUTPOST = "outpost"
 AGS_BP_TYPE_TRADE = "trade_post"
 
 AGS_ENTITY_TABLE = {
+	scots = {
+		castle = "building_defense_keep_sco",
+		town_center_capital = "building_town_center_capital_sco",
+		town_center = "building_town_center_sco",
+		scar_market = "building_econ_market_control_sco",
+		villager = "unit_villager_1_sco",
+		scout = "unit_scout_1_sco",
+		king = "unit_king_1_sco",
+		palisade_wall = "building_defense_palisade_sco",
+		palisade_gate = "building_defense_palisade_gate_sco",
+		monk = "unit_monk_3_sco",
+		monastery = "building_unit_religious_control_sco",
+		barracks = "building_unit_infantry_control_sco",
+		stable = "building_unit_cavalry_control_sco",
+		archery_range = "building_unit_ranged_control_sco",
+		siege_workshop = "building_unit_siege_control_sco",
+		scar_dock = "building_unit_naval_sco",
+		house = "building_house_control_sco",
+		blacksmith = "building_tech_unit_infantry_control_sco",
+		outpost = "building_defense_tower_house_sco",
+	},
+	vikings = {
+		castle = "building_defense_keep_vik",
+		town_center_capital = "building_town_center_capital_vik",
+		town_center = "building_town_center_vik",
+		scar_market = "building_econ_market_vik",
+		villager = "unit_villager_1_vik",
+		scout = "unit_scout_1_vik",
+		king = "unit_king_1_vik",
+		palisade_wall = "building_defense_palisade_vik",
+		palisade_gate = "building_defense_palisade_gate_vik",
+		monk = "unit_monk_3_vik",
+		monastery = "building_unit_religious_vik",
+		barracks = "building_unit_infantry_vik",
+		stable = "building_unit_cavalry_vik",
+		archery_range = "building_unit_ranged_vik",
+		siege_workshop = "building_unit_siege_vik",
+		scar_dock = "building_unit_naval_vik",
+		house = "building_longhouse_vik",
+		outpost = "building_defense_outpost_vik",
+	},
 	abbasid = {
 		castle = "building_defense_keep_control_abb",
 		town_center_capital = "building_town_center_capital_abb",
@@ -616,7 +656,6 @@ AGS_ENTITY_TABLE = {
 		outpost = "building_defense_outpost_tem",
 	},
 }
-
 AGS_CIV_ABBASID = "abbasid"
 AGS_CIV_ABBASID_HA_01 = "abbasid_ha_01"
 AGS_CIV_AYYUBID_CMP = "ayyubid_cmp"
@@ -642,6 +681,8 @@ AGS_CIV_RUS = "rus"
 AGS_CIV_SULTANATE = "sultanate"
 AGS_CIV_SULTANATE_HA_TUG = "sultanate_ha_tug"
 AGS_CIV_TEMPLAR = "templar"
+AGS_CIV_SCOTS = "scots"
+AGS_CIV_VIKINGS = "vikings"
 AGS_UP_ANY = "common"
 AGS_UP_CASTLE = "AGE_CASTLE"
 AGS_UP_DARK = "AGE_DARK"
@@ -650,6 +691,8 @@ AGS_UP_IMPERIAL = "AGE_IMPERIAL"
 AGS_UP_SPECIAL = "special"
 
 AGS_CIV_PREFIXES = {
+	scots = "sco_",
+	vikings = "vik_",
 	abbasid = "abb_",
 	abbasid_ha_01 = "abb_ha_01_",
 	ayyubid_cmp = "ayy_",
@@ -685,6 +728,34 @@ AGS_UPGRADE_AGES = {
 }
 
 AGS_UPGRADE_CORRECTION_TABLE = {
+	scots = {
+		"upgrade_unit_archer_3",
+		"upgrade_unit_archer_4",
+		"upgrade_unit_manatarms_4",
+		"upgrade_unit_spearman_2",
+		"upgrade_unit_spearman_3",
+		"upgrade_unit_spearman_4",
+	},
+	vikings = {
+		"upgrade_melee_armor_i",
+		"upgrade_melee_armor_ii",
+		"upgrade_melee_armor_iii",
+		"upgrade_melee_damage_i",
+		"upgrade_melee_damage_ii",
+		"upgrade_melee_damage_iii",
+		"upgrade_ranged_armor_i",
+		"upgrade_ranged_armor_ii",
+		"upgrade_ranged_armor_iii",
+		"upgrade_ranged_damage_i",
+		"upgrade_ranged_damage_ii",
+		"upgrade_ranged_damage_iii",
+		"upgrade_unit_crossbowman_4",
+		"upgrade_unit_knight_4",
+		"upgrade_unit_manatarms_4",
+		"upgrade_unit_spearman_2",
+		"upgrade_unit_spearman_3",
+		"upgrade_unit_spearman_4",
+	},
 	abbasid = {
 		"upgrade_naval_forecastle",		
 	},
@@ -766,6 +837,81 @@ AGS_UPGRADE_CORRECTION_TABLE = {
 }
 
 AGS_UPGRADE_TABLE = {
+	scots = {
+		AGE_DARK = {
+		},
+		AGE_FEUDAL = {
+			"upgrade_highland_tier1_sco",
+			"upgrade_lowland_and_highland_tier2_sco",
+			"upgrade_lowland_tier1_sco",
+			"upgrade_naval_birlinn_sco",
+			"upgrade_tower_house_barmkin_sco",
+			"upgrade_unit_spearman_2_sco",
+			"upgrade_wallace_rally_sco",
+		},
+		AGE_CASTLE = {
+			"upgrade_highland_tier2_sco",
+			"upgrade_lochaber_axes_sco",
+			"upgrade_lowland_tier2_sco",
+			"upgrade_stone_tower_houses_sco",
+			"upgrade_tower_house_stealth_forest_sco",
+			"upgrade_unit_archer_3_sco",
+			"upgrade_unit_cateran_3_sco",
+			"upgrade_unit_manatarms_3_sco",
+			"upgrade_unit_spearman_3_sco",
+		},
+		AGE_IMPERIAL = {
+			"upgrade_basket_hilted_broadsword_sco",
+			"upgrade_highland_tier3_sco",
+			"upgrade_lowland_tier3_sco",
+			"upgrade_snaphaunce_weapons_sco",
+			"upgrade_unit_archer_4_sco",
+			"upgrade_unit_cateran_4_sco",
+			"upgrade_unit_gallowglass_4_sco",
+			"upgrade_unit_manatarms_4_sco",
+			"upgrade_unit_spearman_4_sco",
+		},
+	},
+	vikings = {
+		AGE_DARK = {
+		},
+		AGE_FEUDAL = {
+			"upgrade_loom_armor_1_vik",
+			"upgrade_smithy_damage_1_vik",
+			"upgrade_bondi_wood_gather_vik",
+			"upgrade_economy_farmathr_vik",
+			"upgrade_infantry_hamrammr_vik",
+			"upgrade_infantry_turnshoes_vik",
+			"upgrade_naval_extra_oars_vik",
+			"upgrade_naval_sunstones_vik",
+			"upgrade_unit_berserker_2_vik",
+			"upgrade_unit_spearman_2_vik",
+		},
+		AGE_CASTLE = {
+			"upgrade_loom_armor_2_vik",
+			"upgrade_smithy_damage_2_vik",
+			"upgrade_building_danevirke_vik",
+			"upgrade_infantry_hail_of_arrows_vik",
+			"upgrade_infantry_ulfberht_swords_vik",
+			"upgrade_naval_leding_vik",
+			"upgrade_naval_reinforced_keel_vik",
+			"upgrade_naval_snaerisspjot_vik",
+			"upgrade_unit_berserker_3_vik",
+			"upgrade_unit_spearman_3_vik",
+		},
+		AGE_IMPERIAL = {
+			"upgrade_economy_folkekirken_vik",
+			"upgrade_loom_armor_3_vik",
+			"upgrade_smithy_damage_3_vik",
+			"upgrade_infantry_leikr_training_vik",
+			"upgrade_naval_ship_bard_vik",
+			"upgrade_unit_berserker_4_vik",
+			"upgrade_unit_crossbowman_4_vik",
+			"upgrade_unit_knight_4_vik",
+			"upgrade_unit_manatarms_4_vik",
+			"upgrade_unit_spearman_4_vik",
+		},
+	},
 	abbasid = {
 		AGE_DARK = {
 		},
@@ -872,15 +1018,15 @@ AGS_UPGRADE_TABLE = {
 			"upgrade_econ_resource_wood_harvest_rate_2",
 			"upgrade_scout_forester",
 			"upgrade_villager_health",
-			
+
 			"upgrade_naval_addsails",			
-			
+
 			"upgrade_melee_armor_i",
 			"upgrade_melee_damage_i",
 			"upgrade_ranged_armor_i",
 			"upgrade_ranged_damage_i",
 			"upgrade_siege_engineers",				
-			
+
 			"upgrade_unit_horsearcher_2",
 			"upgrade_unit_spearman_2",
 		},
@@ -889,22 +1035,22 @@ AGS_UPGRADE_TABLE = {
 			"upgrade_econ_resource_food_harvest_rate_3",
 			"upgrade_econ_resource_gold_harvest_rate_3",
 			"upgrade_econ_resource_wood_harvest_rate_3",
-			
+
 			"upgrade_melee_armor_ii",
 			"upgrade_melee_damage_ii",
 			"upgrade_ranged_armor_ii",
 			"upgrade_ranged_damage_ii",
 			"upgrade_tech_military_academy",
-			
+
 			"upgrade_naval_armored_hull",
 			"upgrade_naval_extra_hammocks",
 			-- Springald Crews
 			"upgrade_naval_springald_ship_upgrade_1",
 			"upgrade_naval_incendiaries",
-						
+
 			"upgrade_siege_weapon_speed",
 			"upgrade_tech_university_murder_holes_4",
-			
+
 			"upgrade_unit_religious_herbal_medicine_4",
 			"upgrade_unit_archer_3",
 			"upgrade_unit_horsearcher_3",
@@ -915,12 +1061,12 @@ AGS_UPGRADE_TABLE = {
 			"upgrade_econ_resource_food_harvest_rate_4",
 			"upgrade_econ_resource_gold_harvest_rate_4",
 			"upgrade_econ_resource_wood_harvest_rate_4",
-			
+
 			"upgrade_melee_armor_iii",
 			"upgrade_melee_damage_iii",			
 			"upgrade_ranged_armor_iii",
 			"upgrade_ranged_damage_iii",
-			
+
 			"upgrade_unit_religious_piety_4",
 			"upgrade_unit_religious_tithe_barn_4",
 			"upgrade_unit_archer_4",
@@ -930,18 +1076,18 @@ AGS_UPGRADE_TABLE = {
 			"upgrade_unit_knight_4",
 			"upgrade_unit_manatarms_4",
 			"upgrade_unit_spearman_4",
-						
+
 			"upgrade_manatarms_elite_army_tactics",
 			"upgrade_ranged_incendiary",			
 			"upgrade_tech_university_architecture_4",
 			"upgrade_tech_university_biology",
 			"upgrade_siege_chemistry",
 			"upgrade_siege_works",
-			
+
 			"upgrade_siege_roller_trigger",
 			"upgrade_siege_adjustable_crossbar",
 			"upgrade_siege_mathematics",
-			
+
 			"upgrade_naval_shipwrights",
 			"upgrade_naval_heated_shot",
 			"upgrade_naval_swivel_cannon",
@@ -1117,7 +1263,7 @@ AGS_UPGRADE_TABLE = {
 		},
 		AGE_IMPERIAL = {
 			"upgrade_naval_mounted_guns",
-			
+
 			"upgrade_sofa_farima_leadership_mal",
 			"upgrade_donso_precision_training_mal",
 			"upgrade_stealth_healing_mal",
@@ -1240,7 +1386,7 @@ AGS_UPGRADE_TABLE = {
 		},
 		AGE_CASTLE = {
 			"upgrade_naval_adaptable_hulls_rus",
-			
+
 			"upgrade_saints_blessing_duration_rus",
 			"upgrade_saints_blessing_buff_effect_rus",
 			"upgrade_saints_blessing_range_rus",	
@@ -1448,7 +1594,6 @@ function AGS_GetCivilizationEntity(player_civ, bp_type)
 end
 
 function AGS_GetCivilizationUnit(player_civ, bp_type)
-	AGS_Print(player_civ)
 	return BP_GetSquadBlueprint(AGS_ENTITY_TABLE[player_civ][bp_type])
 end
 
@@ -1599,7 +1744,7 @@ end
 
 function AGS_RemoveUpgrade(player_id, upgrade)
 	local bp_upgrade = BP_GetUpgradeBlueprint(upgrade)
-	if not Player_HasUpgrade(player_id, bp_upgrade) then
+	if Player_HasUpgrade(player_id, bp_upgrade) then
 		Player_RemoveUpgrade(player_id, bp_upgrade)				
 	end
 end

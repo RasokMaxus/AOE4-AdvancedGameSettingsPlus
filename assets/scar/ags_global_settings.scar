@@ -2,7 +2,6 @@
 -- Authors:
 -- Relic
 -- Woprock
--- Joshua Sachtleben
 --
 -- Description:
 -- Contains all option definitions and their current values.
@@ -74,7 +73,7 @@ AGS_GS_COLOR_GREY = 9 -- Monsoon/Natural Grey
 -- Local player should never change. And be ready after Initialization Phase.
 -- Local player is used for UI & visual logic. Gameplay logic should never use it as it will cause desync.
 AGS_GS_LOCAL_PLAYER = nil
-AGS_GLOBAL_SETTINGS_BUILD = "4.2.2"
+AGS_GLOBAL_SETTINGS_BUILD = "4.2.5"
 AGS_GLOBAL_SETTINGS_MODULE = "AGS_GlobalSettings"
 AGS_GLOBAL_SETTINGS = {
 	Annihilation = true, -- Player loses everything. 
@@ -970,6 +969,14 @@ function AGS_GlobalSettings_SetMaximumPopulation(max_population)
 		AGS_GLOBAL_SETTINGS.MaximumPopulation = 1000
 	elseif max_population.enum_value == max_population.enum_items.max_population_10000 then
 		AGS_GLOBAL_SETTINGS.MaximumPopulation = 10000
+	elseif max_population.enum_value == max_population.enum_items.max_population_1250 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 1250
+	elseif max_population.enum_value == max_population.enum_items.max_population_1500 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 1500
+	elseif max_population.enum_value == max_population.enum_items.max_population_1750 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 1750
+	elseif max_population.enum_value == max_population.enum_items.max_population_2000 then
+		AGS_GLOBAL_SETTINGS.MaximumPopulation = 2000
 	end
 end
 

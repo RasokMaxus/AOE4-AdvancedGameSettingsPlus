@@ -32,7 +32,8 @@ AGS_COLOR_MAINTAINER_TO_SLOT_TABLE = { -- Holds the slot index of each player co
 	["#FFAE6BFF"] = 6,
 	["#FFFF8800"] = 7,
 	["#FFF65BB2"] = 8,
-	["#FF888888"] = 9
+	["#FF888888"] = 9,
+	
 }
 
 AGS_COLOR_MAINTAINER_CAN_REFRESH = true
@@ -90,6 +91,7 @@ end
 
 function AGS_ColorMaintainer_CreateAutomaticSlots()
 	for _, player in pairs(PLAYERS) do
+
 		player.AGS_Colors = {
 			Slot = AGS_COLOR_MAINTAINER_TO_SLOT_TABLE[UI_GetColourAsString(Player_GetUIColour(player.id))],
 		}

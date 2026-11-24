@@ -2,7 +2,6 @@
 -- Authors:
 -- Relic
 -- Woprock
--- Joshua Sachtleben
 --
 -- Description:
 -- Conquest win condition.
@@ -140,7 +139,11 @@ function AGS_Conquest_OnEntityLandmarkDestroyed(context)
 	end
 	local player = Core_GetPlayersTableEntry(context.landmarkOwner)
 	local entity_id = context.landmarkEntity
-	AGS_Conquest_ConquerableDestroyed(player, entity_id)
+	local killer = nil
+	if context.killer ~= nil and not World_OwnsEntity(entity_id) then
+		killer = Core_GetPlayersTableEntry(Entity_GetPlayerOwner(entity_id))
+	end
+	AGS_Conquest_ConquerableDestroyed(player, entity_id, killer)
 end
 -- Entity built must be registred as conquerable
 -- Track entity UWIDs since Mongol structures trigger a GE_ConstructionComplete
