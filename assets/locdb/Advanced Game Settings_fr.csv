@@ -90,7 +90,7 @@
 89,,Minuterie de merveilles
 90,,Temps requis pour défendre une merveille.
 91,,Dernière merveille debout
-92,,Détruire la merveille terminée éliminera le joueur.
+92,,Si la merveille terminée tombe, son propriétaire est éliminé.
 93,,Échelle de côut des merveilles
 94,,Échelle du coût de la merveille en fonction du nombre de joueurs. Cela définit la quantité additionnelle de ressources par joueurs. Le prix commence à 3000 de chaque ressource.
 95,,0 par joueur
