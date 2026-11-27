@@ -47,8 +47,9 @@ end
 
 function AGS_PopulationCapacity_SetMinPopulation(player, pop_size)
 	local value = pop_size
-	-- Mongols receive always maximum to maintain their unique bonus.
-	if player.raceName == AGS_CIV_MONGOL then
+	-- Mongols and Golden Horde receive always maximum to maintain their unique bonus.
+	-- Both start at base_personnel_cap 200 (army\standard_mode\normal_mongol*.xml).
+	if player.raceName == AGS_CIV_MONGOL or player.raceName == AGS_CIV_MONGOL_HA_GOL then
 		if AGS_GLOBAL_SETTINGS.MinimumPopulationReset then
 			value = value - 200			
 		else

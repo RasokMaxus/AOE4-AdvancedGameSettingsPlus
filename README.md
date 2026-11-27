@@ -4,7 +4,7 @@ A fork of [Advanced Game Settings - Alternate](https://github.com/joshuasachtleb
 
 - **Depleted Mines** (Gameplay Settings dropdown: Off / 10% / 15% / 20% / 25%): gold and stone deposits never run out. Once nearly empty they stay on the map as "(Depleted)" and villagers mine them at the chosen percentage of their normal speed.
 - **Tree Regrowth** (Gameplay Settings dropdown: Off / 10 / 15 / 20 / 25 / 30 minutes, plus 1 and 3 minute test choices): when a tree is used up, a tree of the same kind grows back at the same spot after the chosen time. Spots with a building on or next to them, or with a unit within 5 m, wait until they have been clear for 30 seconds.
-- **Civ data fixes**: Jin Dynasty settings now apply (it was listed as `jin` instead of `jin_dynasty`); building names updated for Jin, Templar, Lancaster, Japanese and Golden Horde; Ending Age uses each civ's real age menus, and locks the age-up upgrades of Templar, Golden Horde and Ayyubids; the Templar age-up screen shows the units each commanderie unlocks; no errors for civs that lack a building.
+- **Civ data fixes**: Jin Dynasty settings now apply (it was listed as `jin` instead of `jin_dynasty`); building names updated for Jin, Templar, Lancaster, Japanese and Golden Horde; Ending Age uses each civ's real age menus, and locks the age-up upgrades of Templar, Golden Horde and Ayyubids; the Templar age-up screen shows the units each commanderie unlocks; Golden Horde gets the raised population cap like the Mongols; no errors for civs that lack a building.
 
 Advanced Game Settings by Woprok and Joshua Sachtleben, Alternate 4.2.5 by blue60007. Licensed under GPLv3 (see LICENSE.md).
 
