@@ -26,12 +26,12 @@ AGS_COLOR_MAINTAINER_MODULE = "AGS_ColorMaintainer"
 AGS_COLOR_MAINTAINER_TO_SLOT_TABLE = { -- Holds the slot index of each player colour
 	["#FF188CFF"] = 1,
 	["#FFFF3B30"] = 2,
-	["#FFEBD300"] = 3,
-	["#FF00C700"] = 4,
+	["#FFEBE500"] = 3,
+	["#FF00E000"] = 4,
 	["#FF00E8E8"] = 5,
 	["#FFAE6BFF"] = 6,
 	["#FFFF8800"] = 7,
-	["#FFF65BB2"] = 8,
+	["#FFF671AC"] = 8,
 	["#FF888888"] = 9,
 	
 }
