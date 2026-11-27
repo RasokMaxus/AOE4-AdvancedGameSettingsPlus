@@ -161,6 +161,8 @@ AGS_GLOBAL_SETTINGS = {
 	Treasures = false,
 	DepletedMines = false,
 	DepletedMinesYield = 0.15,
+	TreeRegrowth = false,
+	TreeRegrowthDelay = 900, -- seconds
 	
 	ScatteredScout = false, -- defined only for nomad
 	StartingMonks = 1, --undefined
@@ -453,6 +455,9 @@ function AGS_GlobalSettings_DefineLegacySettings(category)
 	end
 	if category.option_legacy_setting_wonder_construction ~= nil then
 		AGS_GLOBAL_SETTINGS.WonderConstruction = category.option_legacy_setting_wonder_construction
+	end
+	if category.option_legacy_setting_tree_regrowth then
+		AGS_GlobalSettings_SetTreeRegrowth(category.option_legacy_setting_tree_regrowth)
 	end
 	if category.option_legacy_setting_depleted_mines then
 		AGS_GlobalSettings_SetDepletedMines(category.option_legacy_setting_depleted_mines)
@@ -1164,6 +1169,26 @@ function AGS_GlobalSettings_SetDepletedMines(depleted_mines)
 	AGS_GLOBAL_SETTINGS.DepletedMines = rate ~= nil
 	if rate ~= nil then
 		AGS_GLOBAL_SETTINGS.DepletedMinesYield = rate
+	end
+end
+
+-- Tree Regrowth dropdown: Off, or the delay before a used-up tree grows back.
+-- The 1 and 3 minute choices are for testing.
+function AGS_GlobalSettings_SetTreeRegrowth(tree_regrowth)
+	local items = tree_regrowth.enum_items
+	local delays = {
+		[items.tree_regrowth_1] = 60,
+		[items.tree_regrowth_3] = 180,
+		[items.tree_regrowth_10] = 600,
+		[items.tree_regrowth_15] = 900,
+		[items.tree_regrowth_20] = 1200,
+		[items.tree_regrowth_25] = 1500,
+		[items.tree_regrowth_30] = 1800,
+	}
+	local delay = delays[tree_regrowth.enum_value]
+	AGS_GLOBAL_SETTINGS.TreeRegrowth = delay ~= nil
+	if delay ~= nil then
+		AGS_GLOBAL_SETTINGS.TreeRegrowthDelay = delay
 	end
 end
 

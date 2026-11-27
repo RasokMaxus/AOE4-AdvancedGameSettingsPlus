@@ -1,0 +1,239 @@
+---------------------------------------------------------------------------------------------------
+-- Description:
+-- Tree Regrowth (AoE2-style): when a tree is used up (or destroyed) and disappears, a tree of the
+-- same kind grows back at the same spot after the delay chosen in the lobby. A spot covered by a
+-- building, or with a unit standing on it, is checked again later, so a tree comes back once the
+-- spot is clear (e.g. after the building is destroyed).
+---------------------------------------------------------------------------------------------------
+
+AGS_TREE_REGROWTH_MODULE = "AGS_TreeRegrowth"
+
+AGS_TREE_REGROWTH_DELAY = 900				-- seconds between a tree disappearing and growing back (set from the lobby)
+AGS_TREE_REGROWTH_CLEAR_WAIT = 30			-- a spot that was blocked must stay clear this long before the tree grows
+AGS_TREE_REGROWTH_REGROW_INTERVAL = 5		-- how often due spots (and blocked spots) are checked
+AGS_TREE_REGROWTH_REGROW_BATCH = 50			-- spots checked per regrow tick; the next tick carries on where this one stopped
+AGS_TREE_REGROWTH_WATCH_INTERVAL = 1		-- how often a batch of living trees is checked
+AGS_TREE_REGROWTH_WATCH_BATCH = 400			-- trees checked per watch tick (a 10,000-tree map is swept in ~25 s)
+AGS_TREE_REGROWTH_UNIT_RADIUS = 5			-- a unit this close delays the regrowth (2 m let trees grow among villagers, who went idle)
+AGS_TREE_REGROWTH_BUILDING_RADIUS = 8		-- a building whose centre is this close blocks the spot (keeps trees off buildings' sides)
+AGS_TREE_REGROWTH_FOOTPRINT_RADIUS = 15		-- with a building this close, the spot is also checked against building footprints
+AGS_TREE_REGROWTH_FOOTPRINT_SHIFT = 1		-- metres the engine may move the tree before the spot counts as covered
+
+AGS_TREE_REGROWTH_STATE = {
+	trees = {},		-- array of { id, bp, pos, heading } for living trees
+	cursor = 1,		-- next index in trees to check
+	gone = {},		-- array of { stump, bp, pos, heading, due, waiting, clear_since } for spots waiting to regrow
+	gone_cursor = 1,	-- next index in gone to check
+}
+
+---------------------------------------------------------------------------------------------------
+-- Delegates:
+---------------------------------------------------------------------------------------------------
+
+Core_RegisterModule(AGS_TREE_REGROWTH_MODULE)
+
+function AGS_TreeRegrowth_UpdateModuleSettings()
+	AGS_Print("AGS_TreeRegrowth_UpdateModuleSettings")
+	if not AGS_GLOBAL_SETTINGS.TreeRegrowth then
+		Core_UnregisterModule(AGS_TREE_REGROWTH_MODULE)
+	end
+end
+
+function AGS_TreeRegrowth_OnStarting()
+	AGS_Print("AGS_TreeRegrowth_OnStarting")
+	AGS_TREE_REGROWTH_DELAY = AGS_GLOBAL_SETTINGS.TreeRegrowthDelay or AGS_TREE_REGROWTH_DELAY
+	AGS_TreeRegrowth_Scan()
+	Rule_AddInterval(AGS_TreeRegrowth_Watch, AGS_TREE_REGROWTH_WATCH_INTERVAL)
+	Rule_AddInterval(AGS_TreeRegrowth_Regrow, AGS_TREE_REGROWTH_REGROW_INTERVAL)
+end
+
+---------------------------------------------------------------------------------------------------
+-- Functions:
+---------------------------------------------------------------------------------------------------
+
+function AGS_TreeRegrowth_Track(entity)
+	table.insert(AGS_TREE_REGROWTH_STATE.trees, {
+		id = Entity_GetID(entity),
+		bp = Entity_GetBlueprint(entity),
+		pos = Entity_GetPosition(entity),
+		heading = Entity_GetHeading(entity),
+	})
+end
+
+function AGS_TreeRegrowth_Scan()
+	local eg = EGroup_CreateIfNotFound("eg_ags_tree_regrowth_scan")
+	EGroup_Clear(eg)
+	World_GetAllNeutralEntities(eg)
+	-- Iterate with ForEachEx, spawned only. Looping 1..EGroup_Count with EGroup_GetEntityAt can fail mid-match
+	-- with "Invalid sim::EntityGroupObs index", a fatal script error that interrupts the game.
+	EGroup_ForEachEx(eg, function(gid, idx, entity)
+		if Entity_IsOfType(entity, AGS_BP_TREE) then
+			AGS_TreeRegrowth_Track(entity)
+		end
+		return false
+	end, true, false)
+	EGroup_Clear(eg)
+	AGS_Print("AGS_TreeRegrowth_Scan: tracking " .. tostring(#AGS_TREE_REGROWTH_STATE.trees) .. " trees")
+end
+
+-- A used-up tree does not disappear: trees have on_depletion linger_duration = -1, so the entity stays on the
+-- map as a stump with no wood left. A tree destroyed outright (e.g. by siege) is no longer valid.
+function AGS_TreeRegrowth_IsStanding(t)
+	if not Entity_IsValid(t.id) then
+		return false
+	end
+	local e = Entity_FromID(t.id)
+	-- Guards against the id being reused by an entity that is not a tree.
+	if not Entity_IsOfType(e, AGS_BP_TREE) then
+		return false
+	end
+	return Entity_GetRemainingResourceDepositAmount(e) > 0
+end
+
+-- Removes the stump of a used-up tree so the new tree does not grow inside it.
+function AGS_TreeRegrowth_RemoveStump(g)
+	if g.stump ~= nil and Entity_IsValid(g.stump) then
+		local e = Entity_FromID(g.stump)
+		if Entity_IsOfType(e, AGS_BP_TREE) and Entity_GetRemainingResourceDepositAmount(e) <= 0 then
+			Entity_Destroy(e)
+		end
+	end
+	g.stump = nil
+end
+
+-- Checks a batch of living trees per tick; trees that are gone move to the regrowth list.
+function AGS_TreeRegrowth_Watch()
+	local state = AGS_TREE_REGROWTH_STATE
+	local trees = state.trees
+	local n = #trees
+	local checks = math.min(AGS_TREE_REGROWTH_WATCH_BATCH, n)
+	local due = World_GetGameTime() + AGS_TREE_REGROWTH_DELAY
+	for _ = 1, checks do
+		if n == 0 then
+			break
+		end
+		if state.cursor > n then
+			state.cursor = 1
+		end
+		local t = trees[state.cursor]
+		if AGS_TreeRegrowth_IsStanding(t) then
+			state.cursor = state.cursor + 1
+		else
+			table.insert(state.gone, { stump = t.id, bp = t.bp, pos = t.pos, heading = t.heading, due = due })
+			-- Swap-remove; the moved tree is checked on this same index next.
+			trees[state.cursor] = trees[n]
+			trees[n] = nil
+			n = n - 1
+		end
+	end
+end
+
+-- Cheap checks that need no new entity: a unit on the spot, or a building centred on it.
+-- Returns blocked, building_nearby.
+function AGS_TreeRegrowth_IsOccupied(g)
+	local sg = SGroup_CreateIfNotFound("sg_ags_tree_regrowth_near")
+	local eg = EGroup_CreateIfNotFound("eg_ags_tree_regrowth_near")
+	local building_nearby = false
+	for _, player in pairs(PLAYERS) do
+		World_GetSquadsNearPoint(player.id, sg, g.pos, AGS_TREE_REGROWTH_UNIT_RADIUS, OT_Player)
+		local units = SGroup_CountSpawned(sg)
+		SGroup_Clear(sg)
+		if units > 0 then
+			return true, building_nearby
+		end
+		World_GetEntitiesNearPoint(player.id, eg, g.pos, AGS_TREE_REGROWTH_FOOTPRINT_RADIUS, OT_Player)
+		local on_spot = false
+		EGroup_ForEachEx(eg, function(gid, idx, e)
+			if Entity_IsBuilding(e) then
+				building_nearby = true
+				on_spot = World_DistancePointToPoint(Entity_GetPosition(e), g.pos) <= AGS_TREE_REGROWTH_BUILDING_RADIUS
+			end
+			return on_spot		-- true stops the loop
+		end, true, false)
+		EGroup_Clear(eg)
+		if on_spot then
+			return true, building_nearby
+		end
+	end
+	return false, building_nearby
+end
+
+-- Large buildings (town centres, walls) can cover the spot while their centre is far away:
+-- if the engine would have to move the new tree off the spot, something covers it.
+function AGS_TreeRegrowth_IsCovered(g, tree)
+	local safe = World_GetSpawnablePosition(g.pos, tree)
+	return safe ~= nil and World_DistancePointToPoint(safe, g.pos) > AGS_TREE_REGROWTH_FOOTPRINT_SHIFT
+end
+
+-- Returns true if the tree was spawned. A spot that was blocked (unit, building) grows only after it has
+-- been clear for AGS_TREE_REGROWTH_CLEAR_WAIT seconds; any block during that wait restarts it.
+function AGS_TreeRegrowth_TryGrow(g, now)
+	local blocked, building_nearby = AGS_TreeRegrowth_IsOccupied(g)
+	if not blocked and g.waiting then
+		g.clear_since = g.clear_since or now
+		if now - g.clear_since < AGS_TREE_REGROWTH_CLEAR_WAIT then
+			return false
+		end
+	end
+	if not blocked then
+		local h = g.heading or { x = 0, z = 1 }
+		local toward = World_Pos(g.pos.x + h.x * 5, g.pos.y, g.pos.z + h.z * 5)
+		local tree = Entity_CreateENVFacing(g.bp, g.pos, toward, false)
+		if building_nearby and AGS_TreeRegrowth_IsCovered(g, tree) then
+			Entity_Destroy(tree)		-- never spawned
+			blocked = true
+		else
+			AGS_TreeRegrowth_RemoveStump(g)
+			Entity_Spawn(tree)
+			AGS_TreeRegrowth_Track(tree)
+			return true
+		end
+	end
+	g.waiting = true
+	g.clear_since = nil
+	return false
+end
+
+-- Checks due spots, up to a batch per tick, going round the list so every spot gets its turn.
+-- Spots not grown are checked again next tick.
+function AGS_TreeRegrowth_Regrow()
+	local state = AGS_TREE_REGROWTH_STATE
+	local gone = state.gone
+	local n = #gone
+	if n == 0 then
+		return
+	end
+	local now = World_GetGameTime()
+	local grown = {}
+	local tries = 0
+	local i = state.gone_cursor
+	for _ = 1, n do
+		if tries >= AGS_TREE_REGROWTH_REGROW_BATCH then
+			break
+		end
+		if i > n then
+			i = 1
+		end
+		local g = gone[i]
+		if g.due <= now then
+			tries = tries + 1
+			if AGS_TreeRegrowth_TryGrow(g, now) then
+				grown[g] = true
+			end
+		end
+		i = i + 1
+	end
+	state.gone_cursor = i
+	if next(grown) ~= nil then
+		local kept = {}
+		for _, g in ipairs(gone) do
+			if not grown[g] then
+				table.insert(kept, g)
+			end
+		end
+		state.gone = kept
+		if state.gone_cursor > #kept then
+			state.gone_cursor = 1
+		end
+	end
+end
